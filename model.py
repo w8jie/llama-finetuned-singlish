@@ -1,17 +1,19 @@
 from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 from datasets import load_dataset
 from peft import get_peft_model, LoraConfig
+import pandas as pd
 
 # load dataset
 # dataset contains singlish-english conversational pairs
-ds = load_dataset("gabrielchua/singlish-to-english-synthetic")
+ds = load_dataset("csv", data_files="singlish_to_english_v0.3.csv")
 
 model_name = "meta-llama/Llama-3.2-3B-Instruct"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForCausalLM.from_pretrained(
     model_name,
     load_in_8bit=True,
-    device_map="auto"
+    device_map="auto",
+    llm_int8_enable_fp32_cpu_offload=True  # Offload FP32 weights to CPU if necessary
 )
 
 # set up QLoRA
@@ -43,7 +45,7 @@ tokenized_ds = ds.map(preprocess_function, batched=True)
 
 # define training args
 training_args = TrainingArguments(
-    output_dir="./llama-3.2-3B-singlish-finetuned",
+    output_dir="llama-3.2-3B-singlish-finetuned",
     per_device_train_batch_size=2,  # reduce batch size if memory issues occur
     gradient_accumulation_steps=8,  # effective larger batch size
     learning_rate=2e-4,
