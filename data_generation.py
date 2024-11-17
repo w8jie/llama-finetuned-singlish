@@ -145,13 +145,13 @@ for index, activity in enumerate(ACTIVITIES):
         response = client.chat.completions.create(
             model=deployment_name,
             messages=[{"role": "system",
-                "content": "You are an expert in translating Singlish to English"},
+                "content": "You are an expert in answering English questions in Singlish"},
                 {"role": "user",
-                    "content":  f"Create {NUM_SAMPLE} random Singlish (s) to English (e) translation pairs in json. Write full sentences about {activity}."\
+                    "content":  f"Create {NUM_SAMPLE} random conversational English (e) questions and Singlish (s) answers to form Question-Answer pairs in json. Write full questions about {activity}."\
                                 f"Don't exaggerate the use of Singlish, and be natural, as how a real Singaporean would speak."\
                                 f"Start the keys from {(index*NUM_SAMPLE)+1}. For example,"\
-                                "{'X':{'s': 'aiyo, why like that', 'e': 'oh my, how did this happen'}"\
-                                "..., 'X+5': {'s': 'don't play play', 'e': 'don't fool around'} }"}],
+                                "{'X':{'e': 'oh my, what happened to your car?', 's': 'aiyo, don't say already, the car behind hit me, really sibei suay.'}"\
+                                "..., 'X+5': {'e': 'how is the weather today?', 's': 'hot and humid lor'} }"}],
             temperature=0.01,
             response_format={"type":"json_object"}
         )
@@ -162,7 +162,7 @@ for index, activity in enumerate(ACTIVITIES):
         dataset.update(output_json)
 
         # Save the current state to a file after each activity
-        with open('singlish_to_english_v0.3.json', 'w') as f:
+        with open('english_singlish_chat_v0.2.json', 'w') as f:
             json.dump(dataset, f, indent=None)
 
     except Exception as e:
@@ -172,8 +172,8 @@ for index, activity in enumerate(ACTIVITIES):
     time.sleep(DELAY_BETWEEN_CALLS)
 
 # Convert to tabular csv
-df = pd.read_json("singlish_to_english_v0.3.json")
+df = pd.read_json("english_singlish_chat_v0.2.json")
 df = df.T
 df = df.reset_index()
-df.columns = ["index", "singlish", "english"]
-df.to_csv("singlish_to_english_v0.3.csv", index=False)
+df.columns = ["index", "question", "answer"]
+df.to_csv("english_singlish_chat_v0.2.csv", index=False)
