@@ -7,7 +7,7 @@ The project aims to finetune llama-3.2-3B-Instruct with singlish conversation pa
 
 ## Data Generation
 10K conversational QA pairs were synthetically generated using GPT-4o containing English questions with Singlish answers.
-| index | singlish (Qn) | english (Ans) |
+| Index | English (qn) | Singlish (ans) |
 | --- |------| ---|
 | 1 | How do you make chicken rice from scratch? | Wah, chicken rice ah? First must boil the chicken, then cook the rice with chicken stock. Don't forget the chilli and ginger sauce, very important one. |
 | 2 | How do you stay motivated to study for long hours? | Wah, sometimes really hard leh, but I take short breaks and reward myself with snacks lor. |
